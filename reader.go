@@ -1,12 +1,13 @@
 package justext
 
 import (
+	"errors"
 	"fmt"
-	"github.com/levigross/exp-html"
 	"io"
 	"io/ioutil"
 	"strings"
-	"errors"
+
+	"github.com/levigross/exp-html"
 )
 
 type Reader struct {
@@ -32,6 +33,10 @@ func NewReader(r io.Reader) *Reader {
 		NoHeadings:         false,
 		r:                  r,
 	}
+}
+
+func (r *Reader) ChangeReader(nr io.Reader) {
+	r.r = nr
 }
 
 func (r *Reader) ReadAll() ([]*Paragraph, error) {
