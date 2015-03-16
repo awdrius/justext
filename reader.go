@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"strings"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/levigross/exp-html"
 )
 
@@ -40,23 +40,13 @@ func (r *Reader) ChangeReader(nr io.Reader) {
 }
 
 func (r *Reader) ReadAll() ([]*Paragraph, error) {
-	in, err := ioutil.ReadAll(r.r)
+	doc, err := goquery.NewDocumentFromReader(r.r)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Cannot parse document")
 	}
 
-	root, err := preprocess(string(in), "utf-8", "utf-8", "errors")
-	if err != nil {
-		return nil, err
-	}
-	if root == nil {
-		return nil, errors.New("Preprocess has resulted in nil")
-	}
-
-	htmlSource := nodesToString(root)
-	if len(htmlSource) == 0 {
-		return nil, errors.New("MAIN: perprocess has returned an empty string")
-	}
+	doc.Find(`head,script,style,form`).Remove()
+	htmlSource, _ := doc.Html()
 
 	p, err := paragraphObjectModel(htmlSource)
 	if err != nil {

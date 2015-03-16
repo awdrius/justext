@@ -2,6 +2,7 @@ package justext
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/levigross/exp-html"
@@ -61,7 +62,7 @@ func nodesToString(node *html.Node) string {
 		}
 
 	default:
-		//log.Printf("Unhandled node: %s\n", nodeTypeToString(node))
+		log.Printf("Unhandled node: %s\n", nodeTypeToString(node))
 	}
 	return response
 }
